@@ -17,7 +17,6 @@ class MomentClient:
         self.token = token
         self.auth = CredentialProvider.from_string(self.token)
 
-
     def _client(self) -> CacheClient:
         cache_client = CacheClient(
             configuration=Configurations.Laptop.v1(),
