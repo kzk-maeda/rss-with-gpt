@@ -62,7 +62,6 @@ class MomentClient:
             match get_response:
                 case CacheGet.Hit() as hit:
                     print(f"Look up resulted in a hit: {hit}")
-                    print(f"Looked up Value: {hit.value_string!r}")
                     return hit.value_string
                 case CacheGet.Miss():
                     print("Look up resulted in a: miss. This is unexpected.")
