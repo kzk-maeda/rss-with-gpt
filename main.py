@@ -60,6 +60,7 @@ def main():
     index_master_key = f"index-{date_str}"
     print(index_key)
 
+    # get index list from cache or create it new
     if not momento_client.is_item_present(index_master_key):
         print("Creating index...")
         chunked_urls = divide_urls_into_chunks(urls, CHUNK_SIZE)
@@ -72,18 +73,21 @@ def main():
     else:
         print(f"Index {index_key} already exists in momento.")
 
-    # get index list
-    index_list = momento_client.fetch_list_item(index_master_key)
-    for index in index_list:
-        print(f"index_key: {index}")
+    # create local index if not exists
+    # if not os.path.exists("indexxx.json"):
+    index_keys = momento_client.fetch_list_item(index_master_key)
+    index_list = []
+    for index_key in index_keys:
+        print(f"index_key: {index_key}")
+        index_list.append(momento_client.get_item(index_key))
+    index = openpi_client.create_index(index_list)
 
-    # with suppress_stdout():
-    #     index_str = momento_client.get_item(index_key) or ""
-    # query_string = "tell me the summary of yesterday AWS update."
-    # print(f"Q: \n{query_string}")
-    # with suppress_stdout():
-    #     answer = openpi_client.query(query_string, index_str)
-    # print(f"A: {answer}")
+    # query
+    query_string = "tell me the summary of today's AWS update especially about IPAM and MSK."
+    print(f"Q: \n{query_string}")
+    with suppress_stdout():
+        answer = openpi_client.query(query_string, index)
+    print(f"A: {answer}")
 
 
 if __name__ == "__main__":

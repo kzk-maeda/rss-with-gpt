@@ -1,7 +1,7 @@
 import os
 import csv
 from dotenv import load_dotenv
-from llama_index import GPTSimpleVectorIndex, SimpleWebPageReader
+from llama_index import GPTSimpleVectorIndex, GPTListIndex, SimpleWebPageReader
 from llama_index.response.schema import RESPONSE_TYPE
 
 class OpenAIClient():
@@ -29,12 +29,21 @@ class OpenAIClient():
 
         return index.save_to_string()
 
-    def create_local_index(self, index_str: str) -> None:
-        index = GPTSimpleVectorIndex.load_from_string(index_str)
-        index.save_to_disk("index.json")
+    def create_index(self, index_str_list: list[str]) -> GPTListIndex:
+        index_list = []
+        for index_string in index_str_list:
+            # current_index = GPTSimpleVectorIndex.load_from_string(index_string)
+            index_list.append(GPTSimpleVectorIndex.load_from_string(index_string))
+        
+        result_index = GPTListIndex(index_struct=index_list)
+        return result_index
 
+    def query_from_disk(self, query_string: str, index_file: str) -> RESPONSE_TYPE:
+        index = GPTSimpleVectorIndex.load_from_disk(index_file)
+        answer = index.query(query_string)
+        return answer
 
-    def query(self, query_string: str, index_str: str) -> RESPONSE_TYPE:
-        index = GPTSimpleVectorIndex.load_from_string(index_str)
+    def query(self, query_string: str, index: GPTListIndex) -> RESPONSE_TYPE:
+        # index = GPTSimpleVectorIndex.load_from_disk(index_file)
         answer = index.query(query_string)
         return answer
