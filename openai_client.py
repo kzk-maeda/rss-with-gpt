@@ -22,6 +22,12 @@ class OpenAIClient():
         index = GPTSimpleVectorIndex.from_documents(documents)
 
         return index.save_to_string()
+    
+    
+    def create_local_index(self, index_str: str) -> None:
+        index = GPTSimpleVectorIndex.load_from_string(index_str)
+        index.save_to_disk("index.json")
+
 
     def query(self, query_string: str, index_str: str) -> RESPONSE_TYPE:
         index = GPTSimpleVectorIndex.load_from_string(index_str)
