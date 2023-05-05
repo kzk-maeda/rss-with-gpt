@@ -1,7 +1,5 @@
-import json
 import os
 import sys
-import csv
 import uuid
 from dotenv import load_dotenv
 from datetime import datetime, date, timedelta
@@ -30,13 +28,8 @@ def get_aws_update() -> list[str]:
     matching_entries = rss.extract(target_date)
 
     urls = []
-    with open("urls.csv", "w", newline="", encoding="utf-8") as csvfile:
-        csv_writer = csv.writer(csvfile)
-        for _, url, _ in matching_entries:
-            csv_writer.writerow([url])
-            urls.append(url)
-    
     for title, url, published_date in matching_entries:
+        urls.append(url)
         print(f"Title: {title}")
         print(f"  Published Date: {published_date}")
         print("-------------------------------")
@@ -55,7 +48,6 @@ def main():
     load_dotenv()
 
     urls = get_aws_update()
-    csv_file = "urls.csv"
     cache_name = "aws-update-index"
     token = os.getenv("MOMENTO_AUTH_TOKEN", "")
 
