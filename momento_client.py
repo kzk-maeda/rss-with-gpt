@@ -81,6 +81,16 @@ class MomentoClient:
                     raise error.inner_exception
     
     def fetch_list_item(self, key: str) -> list[str]:
+        with self._client() as cache_client:
+            get_response = cache_client.list_fetch(self.cache_name, key)
+            match get_response:
+                case CacheListFetch.Hit() as hit:
+                    return hit.value_list_string
+                case CacheListFetch.Miss():
+                    print("Look up resulted in a: miss. This is unexpected.")
+                    raise
+                case CacheListFetch.Error() as error:
+                    raise error.inner_exception
         return []
     
     def is_item_present(self, key: str) -> bool:

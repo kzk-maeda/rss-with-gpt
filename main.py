@@ -80,6 +80,11 @@ def main():
     else:
         print(f"Index {index_key} already exists in momento.")
 
+    # get index list
+    index_list = momento_client.fetch_list_item(index_master_key)
+    for index in index_list:
+        print(f"index_key: {index}")
+
     # with suppress_stdout():
     #     index_str = momento_client.get_item(index_key) or ""
     # query_string = "tell me the summary of yesterday AWS update."
