@@ -23,7 +23,12 @@ class OpenAIClient():
 
         return index.save_to_string()
     
-    
+    def create_index_from_urls(self, urls: list) -> str:
+        documents = SimpleWebPageReader().load_data(urls)
+        index = GPTSimpleVectorIndex.from_documents(documents)
+
+        return index.save_to_string()
+
     def create_local_index(self, index_str: str) -> None:
         index = GPTSimpleVectorIndex.load_from_string(index_str)
         index.save_to_disk("index.json")
